@@ -1,0 +1,48 @@
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="row gx-5">
+
+            <div class="col-lg-9">
+
+                <form action="/blogs/<%= blog._id %>?_method=PUT" method="post" enctype="multipart/form-data">
+
+                    <legend>Update blog</legend>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1" value="<%= blog.title %>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                        <textarea class="form-control" name="content" id="editor" rows="3" ><%= blog.content %></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="formFileSm" class="form-label">Ảnh</label>
+                        <input class="form-control form-control-sm" name="file" id="formFileSm" type="file">
+                    </div>
+                    <div><%=  blog.category.name %></div>
+                    <select class="form-select" name="category" aria-label="Default select example">
+
+                        
+                        <% categories.forEach(category => { %>
+                          <% if (category.name !== "Hot") { %>
+                            <option 
+                              value="<%= category._id %>" 
+                              <%= category._id.toString() === blog.category._id.toString() ? "selected" : "" %>>
+                              <%= category.name %>
+                            </option>
+                          <% } %>
+                        <% }) %>
+                      </select>
+                    <br>
+                    <input class="btn btn-dark" type="submit"/>
+
+                </form>
+
+            </div>
+            <div class="col-lg-3">
+                <figure class="mb-4"><img class="img-fluid rounded" src="<%= blog.image %>" alt=""
+                    style="height: 400px; width:900px;  object-fit: cover; " /></figure>
+            </div>
+        </div>
+    </div>
+</section>

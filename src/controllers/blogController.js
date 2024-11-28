@@ -40,7 +40,7 @@ exports.getCreateBlogPage = async (req, res) => {
   const user = await User.findOne({ _id: req.session.userId });
   const categories = await Category.find();
   res.render("blog/create_blog", {
-    categories:categories,
+    categories: categories,
     user: user?.username,
     layout: "layouts/mainLayout",
     title: "Create Blog",
@@ -48,28 +48,24 @@ exports.getCreateBlogPage = async (req, res) => {
 };
 //postBlog
 exports.createBlog = async (req, res) => {
-
   try {
+    const { title, content, category } = req.body;
 
-    const { title, content,category} = req.body;
+    const imageFile = req.file ? `/uploads/images/${req.file.filename}` : null;
 
-    const imageFile =  req.file ? `/uploads/images/${req.file.filename}`:null;
-    
-
-    const blog = new Blog({ title:title, content:content, image:imageFile, category:category , author: req.session.userId });
+    const blog = new Blog({
+      title: title,
+      content: content,
+      image: imageFile,
+      category: category,
+      author: req.session.userId,
+    });
     await blog.save();
     res.redirect("/blogs");
-
-
   } catch (error) {
     console.error(err);
-    res.status(500).send('Lỗi khi tạo blog');
+    res.status(500).send("Lỗi khi tạo blog");
   }
-
- 
-
-
-
 };
 
 //detailBlog
@@ -108,39 +104,77 @@ exports.getBlogById = async (req, res) => {
 };
 //getEditBlogPage
 exports.getEditBlogPage = async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-  if (blog.author.toString() !== req.session.userId) {
-    return res.status(403).send("Unauthorized");
-  }
-  res.render("blog/edit", { blog });
+  const user = await User.findOne({ _id: req.session.userId });
+  const blog = await Blog.findById(req.params.id).populate("category", "name");
+  const categories = await Category.find();
+  res.render("blog/blog_update.ejs", {
+    blog: blog,
+    categories: categories,
+    user: user?.username,
+    layout: "layouts/mainLayout",
+    title: "Create Blog",
+  });
 };
 //updateBlog
 exports.updateBlog = async (req, res) => {
-  const { title, content } = req.body;
-  const blog = await Blog.findById(req.params.id);
-  if (blog.author.toString() !== req.session.userId) {
-    return res.status(403).send("Unauthorized");
+  const { title, content, category } = req.body;
+  const imageFile = req.file ? `/uploads/images/${req.file.filename}` : null;
+
+  //   const categoryId = await Category.findOne({name:category})
+  // console.log(categoryId)
+  try {
+    const blog = await Blog.findById(req.params.id);
+    const categoryNametest = await Category.findById(category) ;
+    console.log("categoryNametest:", categoryNametest);
+    console.log("Category from request:", category);
+    console.log("Blog before update:", blog);
+
+    if (!blog) {
+      return res.status(404).send("Blog not found");
+    }
+
+    // Cập nhật thông tin blog
+    blog.category = category;
+    blog.title = title;
+    blog.content = content;
+    blog.image = imageFile ? imageFile : blog.image;
+
+    await blog.save();
+    res.redirect(`/blogs/personalblog`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
   }
-  blog.title = title;
-  blog.content = content;
-  await blog.save();
-  res.redirect(`/blogs/${req.params.id}`);
 };
 //deleteBlog
 exports.deleteBlog = async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-  if (blog.author.toString() !== req.session.userId) {
-    return res.status(403).send("Unauthorized");
+  const { id } = req.params;
+
+  try {
+    console.log(id);
+    const blog = await Blog.findByIdAndDelete(id);
+
+    if (!blog) {
+      return res.status(404).send("Blog not found");
+    }
+
+    res.redirect("/blogs/personalblog");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
   }
-  await blog.remove();
-  res.redirect("/blogs");
+
+  // if (blog.author.toString() !== req.session.userId) {
+  //   return res.status(403).send("Unauthorized");
+  // }
+  // await blog.remove();
 };
 
 //postcomment
 exports.postComment = async (req, res) => {
   const user = await User.findOne({ _id: req.session.userId });
   const { id, content } = req.body;
-  console.log(req.body);
+
   const comment = new CommentBlog({
     content: content,
     blog: id,
@@ -155,7 +189,7 @@ exports.personalBlog = async (req, res) => {
   const user = await User.findOne({ _id: req.session.userId });
 
   const blogs = await Blog.find().where({ author: req.session.userId });
-  console.log(blogs);
+
   res.render("blog/blog_personal", {
     blogs: blogs,
     user: user?.username,

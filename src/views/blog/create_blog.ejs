@@ -22,13 +22,18 @@
                     </div> 
                     <select class="form-select" name="category" aria-label="Default select example">
                       <%categories.forEach(category => { %>
-                        <option value="<%= category._id %>"><%= category.name %></option>
+                        <% if(category.name !="Hot" ){ %>
+
+                            <option value="<%= category._id %>">
+                                <%= category.name %>
+                            </option>
+                            <% } %>
                       <% }) %>
                         
             
                       </select>
                       <br>
-                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <button class="btn btn-dark" type="submit">Submit</button>
 
                 </form>
 

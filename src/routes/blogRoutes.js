@@ -13,7 +13,7 @@ router.post('/createblog', authMiddleware, upload.single('file'), blogController
 
 router.get('/:id', blogController.getBlogById);
 router.get('/:id/edit', authMiddleware, blogController.getEditBlogPage);
-router.put('/:id', authMiddleware, blogController.updateBlog);
+router.put('/:id', authMiddleware, upload.single('file'), blogController.updateBlog);
 router.delete('/:id', authMiddleware, blogController.deleteBlog);
 
 module.exports = router;

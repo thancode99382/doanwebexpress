@@ -1,12 +1,14 @@
 <section class="py-5">
     <div class="container px-5 my-5">
         <div class="row gx-5">
-            
-            <div class="col-lg-9">
+          <div class="col-lg-2">
+            <a href="/blogs/createblog" type="button" class="btn btn-dark">Create blog</a>
+          </div>
+            <div class="col-lg-10">
                 <table class="table">
                     <thead>
                       <tr>
-                        <th scope="col"></th>
+                        
                         <th scope="col">#</th>
                         <th scope="col">Title</th>
                         <th scope="col">Create At</th>
@@ -17,12 +19,18 @@
                     <tbody>
                       <% blogs.forEach((blog,index) => { %>
                         <tr>
-                          <th scope="row" ><input type="checkbox" class="form-check-input" id="exampleCheck1"></th>
+                          
                           <th scope="row"><%= index + 1 %></th>
                           <td><%= blog.title %></td>
                           <td> <%= new Date(blog.createdAt).toLocaleDateString('vi-VN') %></td>
                           <td> <%= new Date(blog.updatedAt).toLocaleDateString('vi-VN') %></td>
-                          <td> <span><i class="bi bi-pencil-square"></i></span> <span><i class="bi bi-x-lg"></i></span> </td>
+                          <td> <span class="px-2"> <a href="/blogs/<%= blog._id %>/edit"><i class="bi bi-pencil-square"></i></a></span> <span>
+                            
+                            <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST"  style="display: inline;">
+                              <button style="background: transparent; border: none; padding: 0; cursor: pointer;" type="submit" > <i class="bi bi-x-lg" style="color: red;" ></i> </button>
+                            </form>
+                            
+                             </span> </td>
                           
                         </tr>  
                       <% }) %>
@@ -30,9 +38,7 @@
                     </tbody>
                   </table>
             </div>
-            <div class="col-lg-3">
-
-            </div>
+            
         </div>
     </div>
 </section>
