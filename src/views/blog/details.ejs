@@ -1,0 +1,73 @@
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="row gx-5">
+            
+            <div class="col-lg-9">
+                <!-- Post content-->
+                <article>
+                    <!-- Post header-->
+                    <header class="mb-4">
+                        <!-- Post title-->
+                        <h1 class="fw-bolder mb-1">
+                            <%= blog.title %>
+                        </h1>
+                        <!-- Post meta content-->
+                        <div class="text-muted fst-italic mb-2">
+                            <%= new Date(blog.createdAt).toLocaleDateString('vi-VN') %>
+                        </div>
+
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                            <%= blog.category.name %>
+                        </a>
+                    </header>
+                    <!-- Preview image figure-->
+                    <figure class="mb-4"><img class="img-fluid rounded" src="<%= blog.image %>" alt="<%  blog.image %>"
+                            style="height: 400px; width:900px;  object-fit: cover; " /></figure>
+                    <!-- Post content-->
+                    <section class="mb-5">
+                        <div class="fs-5 mb-4">
+                            <%- blog.content %>
+                        </div>
+
+                    </section>
+                </article>
+                <!-- Comments section-->
+                <section>
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <!-- Comment form-->
+                            <form action="/blogs/postcomment" method="post" class="mb-4">
+                                <textarea class="form-control" name="content" rows="3"
+                                    placeholder="Join the discussion and leave a comment!"></textarea>
+                                <br>
+                                <input type="hidden" name="id" value="<%= blog._id %>">
+                                <input type="submit" class="btn btn-primary" value="Send" />
+
+                            </form>
+                            <!-- Comment with nested comments-->
+                            <% comments.forEach(comment=> { %>
+
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0"><i class="bi bi-person-fill"
+                                            style="font-size: 2rem;"></i></div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">
+                                            <%= comment.author?.username %>
+                                        </div>
+                                        <%= comment.content %>
+                                    </div>
+                                </div>
+                                <% }); %>
+
+
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,41 @@
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="row gx-5">
+
+            <div class="col-lg-9">
+
+                <form action="/blogs/createblog" method="post" enctype="multipart/form-data" >
+
+                    <legend>Create blog</legend>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1"
+                            >
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                        <textarea class="form-control" name="content" id="editor" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="formFileSm" class="form-label">Ảnh</label>
+                        <input class="form-control form-control-sm" name="file"  id="formFileSm" type="file">
+                    </div> 
+                    <select class="form-select" name="category" aria-label="Default select example">
+                      <%categories.forEach(category => { %>
+                        <option value="<%= category._id %>"><%= category.name %></option>
+                      <% }) %>
+                        
+            
+                      </select>
+                      <br>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+
+                </form>
+
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+    </div>
+</section>
