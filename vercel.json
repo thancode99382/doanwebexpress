@@ -8,6 +8,10 @@
     ],
     "routes": [
     { "src": "/(.*)", "dest": "server.js" }
-  ]
+  ],
+  "env": {
+    "MONGO_URI": "mongodb+srv://dongvandat9054:dongvandat9054@cluster0.6iv9b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  }
+  
   }
   
