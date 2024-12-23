@@ -42,7 +42,7 @@ const methodOverride = require('method-override');
 // Middleware
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
 app.use(methodOverride('_method'));
 // Cấu hình EJS

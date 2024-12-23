@@ -6,10 +6,10 @@
                 <div class="row gx-0">
                     <div class="col-lg-6 col-xl-5 py-lg-5">
                         <div class="p-4 p-md-5">
-                            <div class="badge bg-primary bg-gradient rounded-pill mb-2">Hot new</div>
-                            <div class="h2 fw-bolder"><%= blog_hot.title %></div>
-                            <p><%= blog_hot.content.split(' ').slice(0, 30).join(' ') + (blog_hot.content.split(' ').length > 100 ? '...' : '') %></p>
-                            <a class="stretched-link text-decoration-none" href="#!">
+                            <div class="badge bg-primary bg-gradient rounded-pill mb-2">Hot news</div>
+                            <div class="h2 fw-bolder"><%- blog_hot.title %></div>
+                            
+                            <a class="stretched-link text-decoration-none" href="/blogs/<%= blog_hot._id %>">
                                 Read more
                                 <i class="bi bi-arrow-right"></i>
                             </a>
@@ -41,7 +41,8 @@
                             </h3>
                         </a>
                         <div>
-                            <%= blog.content.split(' ').slice(0, 25).join(' ') + (blog.content.split(' ').length > 100 ? '...' : '') %>
+                            <div><%- blog.content.split(' ').slice(0, 25).join(' ') + (blog.content.split(' ').length > 100 ? '...' : '') %></div>
+                            
                         </div>
                     </div>
                   
@@ -97,27 +98,7 @@
                             </ul>
                           </nav>
             </div>
-            <div class="col-xl-4">
-                <div class="card border-0 h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex h-100 align-items-center justify-content-center">
-                            <div class="text-center">
-                                <div class="h6 fw-bolder">Contact</div>
-                                <p class="text-muted mb-4">
-                                    For press inquiries, email us at
-                                    <br />
-                                    <a href="#!">press@domain.com</a>
-                                </p>
-                                <div class="h6 fw-bolder">Follow us</div>
-                                <a class="fs-5 px-2 link-dark" href="#!"><i class="bi-twitter"></i></a>
-                                <a class="fs-5 px-2 link-dark" href="#!"><i class="bi-facebook"></i></a>
-                                <a class="fs-5 px-2 link-dark" href="#!"><i class="bi-linkedin"></i></a>
-                                <a class="fs-5 px-2 link-dark" href="#!"><i class="bi-youtube"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
 </section>
