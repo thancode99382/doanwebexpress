@@ -2,9 +2,14 @@ const Blog = require("../models/Blog");
 const User = require("../models/User");
 const Category = require("../models/Category");
 const CommentBlog = require("../models/Comment");
-
+const jwt = require('jsonwebtoken');
 // get all blog
 exports.getAllBlogs = async (req, res) => {
+
+
+  const token = req.cookies.token;
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
 
@@ -20,10 +25,11 @@ exports.getAllBlogs = async (req, res) => {
     .skip(skip)
     .limit(limit);
 
+
   const categoryHot = await Category.findOne({ name: "Hot" });
   const blog_hot = await Blog.findOne({ category: categoryHot._id });
 
-  const user = await User.findOne({ _id: req.session.userId });
+  const user = await User.findOne({ _id: decoded.userId });
 
   res.render("blog/blog_home", {
     user: user?.username,
@@ -37,7 +43,7 @@ exports.getAllBlogs = async (req, res) => {
 };
 //getBlogCreate
 exports.getCreateBlogPage = async (req, res) => {
-  const user = await User.findOne({ _id: req.session.userId });
+  const user = await User.findOne({ _id: req.user.userId });
   const categories = await Category.find();
   res.render("blog/create_blog", {
     categories: categories,
@@ -58,7 +64,7 @@ exports.createBlog = async (req, res) => {
       content: content,
       image: imageFile,
       category: category,
-      author: req.session.userId,
+      author: req.user.userId,
     });
     await blog.save();
     res.redirect("/blogs");
@@ -70,9 +76,12 @@ exports.createBlog = async (req, res) => {
 
 //detailBlog
 exports.getBlogById = async (req, res) => {
+  const token = req.cookies.token;
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
   try {
     // Tìm người dùng hiện tại
-    const user = await User.findOne({ _id: req.session.userId });
+    const user = await User.findOne({ _id: decoded.userId });
 
     // Tìm blog theo ID
     const blog = await Blog.findById(req.params.id);
@@ -104,7 +113,7 @@ exports.getBlogById = async (req, res) => {
 };
 //getEditBlogPage
 exports.getEditBlogPage = async (req, res) => {
-  const user = await User.findOne({ _id: req.session.userId });
+  const user = await User.findOne({ _id: req.user.userId });
   const blog = await Blog.findById(req.params.id).populate("category", "name");
   const categories = await Category.find();
   res.render("blog/blog_update.ejs", {
@@ -164,7 +173,7 @@ exports.deleteBlog = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 
-  // if (blog.author.toString() !== req.session.userId) {
+  // if (blog.author.toString() !== req.user.userId) {
   //   return res.status(403).send("Unauthorized");
   // }
   // await blog.remove();
@@ -172,7 +181,7 @@ exports.deleteBlog = async (req, res) => {
 
 //postcomment
 exports.postComment = async (req, res) => {
-  const user = await User.findOne({ _id: req.session.userId });
+  const user = await User.findOne({ _id: req.user.userId });
   const { id, content } = req.body;
 
   const comment = new CommentBlog({
@@ -186,9 +195,11 @@ exports.postComment = async (req, res) => {
 };
 
 exports.personalBlog = async (req, res) => {
-  const user = await User.findOne({ _id: req.session.userId });
 
-  const blogs = await Blog.find().where({ author: req.session.userId });
+  console.log("#####"+req.user.name)
+  const user = await User.findOne({ _id: req.user.userId });
+
+  const blogs = await Blog.find().where({ author: req.user.userId });
 
   res.render("blog/blog_personal", {
     blogs: blogs,
