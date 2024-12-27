@@ -10,7 +10,7 @@
     { "src": "/(.*)", "dest": "server.js" }
   ],
   "env": {
-    "MONGO_URI": "mongodb+srv://dongvandat9054:dongvandat9054dongvandat9054@cluster0.6uit3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "MONGO_URI": "mongodb+srv://vandat:vandat1@vandat.pk7ah.mongodb.net/test?retryWrites=true&w=majority&appName=vandat"
   }
   
   }
