@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
-        return res.status(401).send('Access denied. No token provided.');
+        return res.redirect('/auth/login');
     }
 
     try {
@@ -16,6 +16,7 @@ module.exports = (req, res, next) => {
         req.user = decoded;
         next(); // Tiếp tục xử lý request
     } catch (err) {
-        return res.status(401).send('Invalid or expired token');
+        res.clearCookie('token');
+        return res.redirect('/auth/login');
     }
 };
