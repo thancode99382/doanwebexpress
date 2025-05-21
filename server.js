@@ -1,5 +1,3 @@
-
-
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
@@ -29,6 +27,11 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 
 // Sử dụng express-ejs-layouts
 app.use(expressLayouts);
+
+// Root route for the introduction page
+app.get('/', (req, res) => {
+  res.render('home/index', { layout: false });
+});
 
 // Routes
 app.use('/auth', require('./src/routes/authRoutes'));

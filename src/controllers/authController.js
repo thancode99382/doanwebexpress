@@ -57,6 +57,6 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.logoutUser = (req, res) => {
-    req.session.destroy();
+    res.clearCookie('token');
     res.redirect('/auth/login');
 };
