@@ -9,23 +9,23 @@ const app = express();
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
 
-// Kết nối MongoDB
- connectDB();
+// Connect to MongoDB
+connectDB();
 
- app.use(cookieParser());
+app.use(cookieParser());
 
 // Middleware
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
-
+app.use(express.json());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
 app.use(methodOverride('_method'));
-// Cấu hình EJS
+
+// Configure EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'views'));
 
-
-// Sử dụng express-ejs-layouts
+// Use express-ejs-layouts
 app.use(expressLayouts);
 
 // Root route for the introduction page
@@ -36,13 +36,14 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/auth', require('./src/routes/authRoutes'));
 app.use('/blogs', require('./src/routes/blogRoutes'));
+app.use('/admin', require('./src/routes/adminRoutes')); // Add admin routes
 
-
+// Static files
 app.use("/css", express.static(path.resolve(__dirname, "public/css")));
 app.use("/img", express.static(path.resolve(__dirname, "public/images")));
-app.use("/uploads", express.static(path.resolve(__dirname,"uploads")));
+app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 app.use("/js", express.static(path.resolve(__dirname, "public/js")));
 
-// Lắng nghe server
+// Listen to server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
