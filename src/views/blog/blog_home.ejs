@@ -1,6 +1,7 @@
 <section class="py-5">
     <div class="container px-5">
        
+        <% if (blog_hot) { %>
         <div class="card border-0 shadow rounded-3 overflow-hidden">
             <div class="card-body p-0">
                 <div class="row gx-0">
@@ -22,6 +23,9 @@
                 </div>
             </div>
         </div>
+        <% } else { %>
+        <div class="alert alert-info">No featured blog available at the moment.</div>
+        <% } %>
     </div>
 </section>
 <section class="py-5 bg-light">

@@ -15,7 +15,12 @@ exports.getAllBlogs = async (req, res) => {
     const { blogs, totalPages } = await blogService.getAllBlogs(page, limit);
     
     // Get hot blog
-    const blog_hot = await blogService.getHotBlog();
+    let blog_hot = await blogService.getHotBlog();
+    
+    // If no hot blog is found, use the most recent blog as a fallback
+    if (!blog_hot && blogs.length > 0) {
+      blog_hot = blogs[0]; // Use the first blog (most recent) as the hot blog
+    }
     
     // Check if user is logged in (admin)
     let user = null;
