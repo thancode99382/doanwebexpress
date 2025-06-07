@@ -15,11 +15,12 @@
                         <label for="exampleFormControlTextarea1" class="form-label">Content</label>
                         <textarea class="form-control" name="content" id="editor" rows="3" ><%= blog.content %></textarea>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label for="formFileSm" class="form-label">Ảnh</label>
+                    <div class="mb-3">
+                        <label for="formFileSm" class="form-label">Image</label>
                         <input class="form-control form-control-sm" name="file" id="formFileSm" type="file">
-                    </div> -->
-                    <div><%=  blog.category.name %></div>
+                        <small class="text-muted">Upload a new image or keep the existing one (supported formats: jpg, jpeg, png, gif, webp)</small>
+                    </div>
+                    <div>Current category: <%=  blog.category.name %></div>
                     <select class="form-select" name="category" aria-label="Default select example">
 
                         
@@ -34,14 +35,15 @@
                         <% }) %>
                       </select>
                     <br>
-                    <input class="btn btn-dark" type="submit"/>
+                    <input class="btn btn-dark" type="submit" value="Update Blog"/>
 
                 </form>
 
             </div>
             <div class="col-lg-3">
+                <h4>Current Image</h4>
                 <figure class="mb-4"><img class="img-fluid rounded" src="<%= blog.image %>" alt=""
-                    style="height: 400px; width:900px;  object-fit: cover; " /></figure>
+                    style="height: 300px; width:100%;  object-fit: cover; " /></figure>
             </div>
         </div>
     </div>

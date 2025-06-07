@@ -1,18 +1,19 @@
 const multer = require("multer");
 const path = require("path");
+const cloudinary = require('../config/cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Cấu hình nơi lưu trữ và đặt tên file
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads/images"); // Thư mục lưu trữ ảnh
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Đổi tên file để tránh trùng
-  },
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'sevenlove_blogs',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    transformation: [{ width: 1000, height: 500, crop: 'limit' }]
+  }
 });
 
-// Bộ lọc loại file (chỉ cho phép ảnh)
+// File filter (only allow images)
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {
     cb(null, true);

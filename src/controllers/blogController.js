@@ -57,19 +57,20 @@ exports.createBlog = async (req, res) => {
   try {
     const { title, content, category } = req.body;
 
-    const imageFile = req.file ? `/uploads/images/${req.file.filename}` : null;
+    // Get image URL from Cloudinary instead of local file path
+    const imageUrl = req.file ? req.file.path : null;
 
     const blog = new Blog({
       title: title,
       content: content,
-      image: imageFile,
+      image: imageUrl,
       category: category,
       author: req.user.userId,
     });
     await blog.save();
     res.redirect("/blogs");
   } catch (error) {
-    console.error(err);
+    console.error(error);
     res.status(500).send("Lỗi khi tạo blog");
   }
 };
@@ -127,7 +128,8 @@ exports.getEditBlogPage = async (req, res) => {
 //updateBlog
 exports.updateBlog = async (req, res) => {
   const { title, content, category } = req.body;
-  const imageFile = req.file ? `/uploads/images/${req.file.filename}` : null;
+  // Get image URL from Cloudinary instead of local file path
+  const imageUrl = req.file ? req.file.path : null;
 
   //   const categoryId = await Category.findOne({name:category})
   // console.log(categoryId)
@@ -146,7 +148,7 @@ exports.updateBlog = async (req, res) => {
     blog.category = category;
     blog.title = title;
     blog.content = content;
-    blog.image = imageFile ? imageFile : blog.image;
+    blog.image = imageUrl ? imageUrl : blog.image;
 
     await blog.save();
     res.redirect(`/blogs/personalblog`);
