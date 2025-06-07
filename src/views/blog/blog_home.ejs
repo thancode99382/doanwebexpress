@@ -28,13 +28,19 @@
     <div class="container px-5">
         <div class="row gx-5">
             <div class="col-xl-8">
-                <h2 class="fw-bolder fs-5 mb-4">News</h2>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bolder fs-5">News</h2>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/blogs/admin/personalblog" class="btn btn-sm btn-primary">Admin Dashboard</a>
+                    <% } %>
+                </div>
                 <% blogs.forEach(blog=> { %>
                         
                         
                     <!-- News item-->
                     <div class="mb-4">
-                        <!-- <div class="small text-muted">May 12, 2023</div> -->
+                        <!-- Add date display -->
+                        <div class="small text-muted"><%= new Date(blog.createdAt).toLocaleDateString('vi-VN') %></div>
                         <a class="link-dark" href="/blogs/<%= blog._id %>">
                             <h3>
                                 <%= blog.title %>
@@ -49,12 +55,6 @@
 
                     <% }) %>
 
-
-
-
-                        <div class="text-end mb-5 mb-xl-0">
-                            
-                        </div>
                         <nav aria-label="...">
 
                             <ul class="pagination">

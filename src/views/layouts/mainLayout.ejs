@@ -31,25 +31,26 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="/blogs">Home</a></li>
 
-
-
-                        <li class="nav-item"><a class="nav-link" href="/blogs/personalblog">Personal Blog</a></li>
-                        <% if(user){ %>
+                        <% if(typeof user !== 'undefined' && user){ %>
+                            <!-- Admin navigation -->
+                            <li class="nav-item"><a class="nav-link" href="/blogs/admin/personalblog">Admin Dashboard</a></li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                        class="bi bi-person-fill"></i></span>
-                                    <%= user %>
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownAdmin" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-fill"></i> <%= user %>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAdmin">
+                                    <li><a class="dropdown-item" href="/blogs/admin/createblog">Create New Blog</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
-
                                 </ul>
                             </li>
-                            <% }else{ %>
-
-                                <li class="nav-item"><a class="nav-link" href="/auth/login">Login</a></li>
-                                <% } %>
+                        <% } else { %>
+                            <!-- Public navigation -->
+                            <li class="nav-item"><a class="nav-link" href="/auth/login">
+                                <i class="bi bi-shield-lock"></i> Admin Login
+                            </a></li>
+                        <% } %>
                     </ul>
                 </div>
             </div>
@@ -62,7 +63,7 @@
         <div class="container px-5">
             <div class="row align-items-center justify-content-between flex-column flex-sm-row">
                 <div class="col-auto">
-                    <div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
+                    <div class="small m-0 text-white">Copyright &copy; Your Website <%= new Date().getFullYear() %></div>
                 </div>
                 <div class="col-auto">
                     <a class="link-light small" href="#!">Privacy</a>

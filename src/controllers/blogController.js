@@ -1,212 +1,204 @@
-const Blog = require("../models/Blog");
-const User = require("../models/User");
-const Category = require("../models/Category");
-const CommentBlog = require("../models/Comment");
 const jwt = require('jsonwebtoken');
-// get all blog
+const blogService = require('../services/blogService');
+const userService = require('../services/userService');
+const categoryService = require('../services/categoryService');
+const commentService = require('../services/commentService');
+
+// Get all blogs with pagination - Public access
 exports.getAllBlogs = async (req, res) => {
-
-
-  const token = req.cookies.token;
-
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
-
-  const skip = (page - 1) * limit;
-
-  // Lấy tổng số blog để tính tổng số trang
-  const totalBlogs = await Blog.countDocuments();
-  const totalPages = Math.ceil(totalBlogs / limit); // Tính tổng số trang
-
-  const blogs = await Blog.find()
-    .populate("category", "name")
-    .populate("author", "username")
-    .skip(skip)
-    .limit(limit);
-
-
-  const categoryHot = await Category.findOne({ name: "Hot" });
-  const blog_hot = await Blog.findOne({ category: categoryHot._id });
-
-  const user = await User.findOne({ _id: decoded.userId });
-
-  res.render("blog/blog_home", {
-    user: user?.username,
-    blog_hot: blog_hot,
-    blogs: blogs,
-    totalPages: totalPages,
-    currentPage: page,
-    layout: "layouts/mainLayout",
-    title: "Blog home",
-  });
-};
-//getBlogCreate
-exports.getCreateBlogPage = async (req, res) => {
-  const user = await User.findOne({ _id: req.user.userId });
-  const categories = await Category.find();
-  res.render("blog/create_blog", {
-    categories: categories,
-    user: user?.username,
-    layout: "layouts/mainLayout",
-    title: "Create Blog",
-  });
-};
-//postBlog
-exports.createBlog = async (req, res) => {
   try {
-    const { title, content, category } = req.body;
-
-    // Get image URL from Cloudinary instead of local file path
-    const imageUrl = req.file ? req.file.path : null;
-
-    const blog = new Blog({
-      title: title,
-      content: content,
-      image: imageUrl,
-      category: category,
-      author: req.user.userId,
+    // Get page and limit from query parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    
+    // Get blogs with pagination using service
+    const { blogs, totalPages } = await blogService.getAllBlogs(page, limit);
+    
+    // Get hot blog
+    const blog_hot = await blogService.getHotBlog();
+    
+    // Check if user is logged in (admin)
+    let user = null;
+    const token = req.cookies.token;
+    
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userData = await userService.getUserFromToken(decoded);
+        user = userData?.username;
+      } catch (err) {
+        // Token is invalid or expired - continue as non-logged in user
+      }
+    }
+    
+    // Render view with data
+    res.render("blog/blog_home", {
+      user,
+      blog_hot,
+      blogs,
+      totalPages,
+      currentPage: page,
+      layout: "layouts/mainLayout",
+      title: "Blog home",
     });
-    await blog.save();
-    res.redirect("/blogs");
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Lỗi khi tạo blog");
+    console.error("Error getting all blogs:", error);
+    res.status(500).send("Error loading blogs");
   }
 };
 
-//detailBlog
-exports.getBlogById = async (req, res) => {
-  const token = req.cookies.token;
-
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+// Render create blog page - Admin only
+exports.getCreateBlogPage = async (req, res) => {
   try {
-    // Tìm người dùng hiện tại
-    const user = await User.findOne({ _id: decoded.userId });
-
-    // Tìm blog theo ID
-    const blog = await Blog.findById(req.params.id);
-
-    // Tìm các bình luận liên quan đến blog và populate thông tin tác giả
-    let comments = await CommentBlog.find({ blog: blog._id }).populate(
-      "author",
-      "username"
-    );
-
-    // Làm sạch dữ liệu để đảm bảo `author` luôn tồn tại
-    comments = comments.map((comment) => ({
-      ...comment._doc, // Lấy các thuộc tính từ MongoDB document
-      author: comment.author || { username: "Anonymous" },
-    }));
-
-    // Render ra view
-    res.render("blog/details", {
-      blog: blog,
-      comments: comments,
+    const user = await userService.getUserById(req.user.userId);
+    const categories = await categoryService.getAllCategories();
+    
+    res.render("blog/create_blog", {
+      categories,
       user: user?.username,
       layout: "layouts/mainLayout",
-      title: "Blog detail",
+      title: "Create Blog",
+    });
+  } catch (error) {
+    console.error("Error loading create blog page:", error);
+    res.status(500).send("Error loading create blog page");
+  }
+};
+
+// Create a new blog - Admin only
+exports.createBlog = async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    
+    // Get image URL from Cloudinary
+    const imageUrl = req.file ? req.file.path : null;
+    
+    // Create blog using service
+    await blogService.createBlog(
+      { title, content, category, image: imageUrl },
+      req.user.userId
+    );
+    
+    res.redirect("/blogs/admin/personalblog");
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    res.status(500).send("Error creating blog");
+  }
+};
+
+// Get blog details by ID - Public access
+exports.getBlogById = async (req, res) => {
+  try {
+    // Get blog by ID
+    const blog = await blogService.getBlogById(req.params.id);
+    if (!blog) {
+      return res.status(404).send("Blog not found");
+    }
+    
+    // Populate category information
+    await blog.populate("category", "name");
+    
+    // Check if user is logged in (admin)
+    let user = null;
+    const token = req.cookies.token;
+    
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userData = await userService.getUserFromToken(decoded);
+        user = userData?.username;
+      } catch (err) {
+        // Token is invalid or expired - continue as non-logged in user
+      }
+    }
+    
+    // Render view with data
+    res.render("blog/details", {
+      blog,
+      user,
+      layout: "layouts/mainLayout",
+      title: blog.title,
     });
   } catch (error) {
     console.error("Error fetching blog details:", error);
     res.status(500).send("Something went wrong!");
   }
 };
-//getEditBlogPage
+
+// Render edit blog page - Admin only
 exports.getEditBlogPage = async (req, res) => {
-  const user = await User.findOne({ _id: req.user.userId });
-  const blog = await Blog.findById(req.params.id).populate("category", "name");
-  const categories = await Category.find();
-  res.render("blog/blog_update.ejs", {
-    blog: blog,
-    categories: categories,
-    user: user?.username,
-    layout: "layouts/mainLayout",
-    title: "Create Blog",
-  });
-};
-//updateBlog
-exports.updateBlog = async (req, res) => {
-  const { title, content, category } = req.body;
-  // Get image URL from Cloudinary instead of local file path
-  const imageUrl = req.file ? req.file.path : null;
-
-  //   const categoryId = await Category.findOne({name:category})
-  // console.log(categoryId)
   try {
-    const blog = await Blog.findById(req.params.id);
-    const categoryNametest = await Category.findById(category) ;
-    console.log("categoryNametest:", categoryNametest);
-    console.log("Category from request:", category);
-    console.log("Blog before update:", blog);
-
+    const user = await userService.getUserById(req.user.userId);
+    const blog = await blogService.getBlogById(req.params.id);
+    
     if (!blog) {
       return res.status(404).send("Blog not found");
     }
-
-    // Cập nhật thông tin blog
-    blog.category = category;
-    blog.title = title;
-    blog.content = content;
-    blog.image = imageUrl ? imageUrl : blog.image;
-
-    await blog.save();
-    res.redirect(`/blogs/personalblog`);
+    
+    await blog.populate("category", "name");
+    const categories = await categoryService.getAllCategories();
+    
+    res.render("blog/blog_update.ejs", {
+      blog,
+      categories,
+      user: user?.username,
+      layout: "layouts/mainLayout",
+      title: "Edit Blog",
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error loading edit page:", error);
+    res.status(500).send("Error loading edit page");
+  }
+};
+
+// Update an existing blog - Admin only
+exports.updateBlog = async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+    
+    // Update blog using service
+    await blogService.updateBlog(req.params.id, {
+      title,
+      content,
+      category,
+      image: imageUrl
+    });
+    
+    res.redirect("/blogs/admin/personalblog");
+  } catch (error) {
+    console.error("Error updating blog:", error);
     res.status(500).send("Server Error");
   }
 };
-//deleteBlog
+
+// Delete a blog - Admin only
 exports.deleteBlog = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    console.log(id);
-    const blog = await Blog.findByIdAndDelete(id);
-
-    if (!blog) {
-      return res.status(404).send("Blog not found");
-    }
-
-    res.redirect("/blogs/personalblog");
+    await blogService.deleteBlog(req.params.id);
+    res.redirect("/blogs/admin/personalblog");
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting blog:", error);
     res.status(500).send("Internal server error");
   }
-
-  // if (blog.author.toString() !== req.user.userId) {
-  //   return res.status(403).send("Unauthorized");
-  // }
-  // await blog.remove();
 };
 
-//postcomment
-exports.postComment = async (req, res) => {
-  const user = await User.findOne({ _id: req.user.userId });
-  const { id, content } = req.body;
-
-  const comment = new CommentBlog({
-    content: content,
-    blog: id,
-    author: user._id,
-  });
-  await comment.save();
-
-  res.redirect(`/blogs/${id}`);
-};
-
+// Admin dashboard with personal blogs
 exports.personalBlog = async (req, res) => {
-
-  console.log("#####"+req.user.name)
-  const user = await User.findOne({ _id: req.user.userId });
-
-  const blogs = await Blog.find().where({ author: req.user.userId });
-
-  res.render("blog/blog_personal", {
-    blogs: blogs,
-    user: user?.username,
-    layout: "layouts/mainLayout",
-    title: "Personal Blog",
-  });
+  try {
+    const user = await userService.getUserById(req.user.userId);
+    
+    // Get blogs by author ID
+    const blogs = await blogService.getBlogsByAuthor(req.user.userId);
+    
+    res.render("blog/blog_personal", {
+      blogs,
+      user: user?.username,
+      layout: "layouts/mainLayout",
+      title: "Admin Dashboard",
+    });
+  } catch (error) {
+    console.error("Error loading personal blogs:", error);
+    res.status(500).send("Error loading personal blogs");
+  }
 };

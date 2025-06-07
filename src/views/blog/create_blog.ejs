@@ -1,47 +1,132 @@
 <section class="py-5">
     <div class="container px-5 my-5">
         <div class="row gx-5">
+            <div class="col-lg-12 mb-4">
+                <h2 class="fw-bolder">Create New Blog Post</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/blogs">Blog Home</a></li>
+                        <li class="breadcrumb-item"><a href="/blogs/admin/personalblog">Admin Dashboard</a></li>
+                        <li class="breadcrumb-item active">Create Blog</li>
+                    </ol>
+                </nav>
+            </div>
 
             <div class="col-lg-9">
-
-                <form action="/blogs/createblog" method="post" enctype="multipart/form-data" >
-
-                    <legend>Create blog</legend>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Title</label>
-                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1"
-                            >
+                <form id="blogForm" action="/blogs/admin/createblog" method="post" enctype="multipart/form-data">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Blog Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" name="title" class="form-control" id="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editor" class="form-label">Content</label>
+                                <textarea class="form-control" name="content" id="editor" rows="10"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="formFileSm" class="form-label">Featured Image</label>
+                                <input class="form-control" name="file" id="formFileSm" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/jpg" required>
+                                <small class="text-muted">Upload an image for your blog post (supported formats: jpg, jpeg, png, gif, webp)</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" name="category" id="category" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <%categories.forEach(category => { %>
+                                        <% if(category.name !="Hot" ){ %>
+                                            <option value="<%= category._id %>">
+                                                <%= category.name %>
+                                            </option>
+                                        <% } %>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                <a href="/blogs/admin/personalblog" class="btn btn-outline-secondary">Cancel</a>
+                                <button id="publishBtn" type="button" class="btn btn-primary">Publish Blog Post</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                        <textarea class="form-control" name="content" id="editor" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="formFileSm" class="form-label">Image</label>
-                        <input class="form-control form-control-sm" name="file" id="formFileSm" type="file">
-                        <small class="text-muted">Upload an image for your blog post (supported formats: jpg, jpeg, png, gif, webp)</small>
-                    </div>
-                    <select class="form-select" name="category" aria-label="Default select example">
-                      <%categories.forEach(category => { %>
-                        <% if(category.name !="Hot" ){ %>
-
-                            <option value="<%= category._id %>">
-                                <%= category.name %>
-                            </option>
-                            <% } %>
-                      <% }) %>
-                        
-            
-                      </select>
-                      <br>
-                    <button class="btn btn-dark" type="submit">Submit</button>
-
                 </form>
-
             </div>
+            
             <div class="col-lg-3">
-
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Publishing Tips</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Use a compelling title</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add high-quality images</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Structure content with headings</li>
+                            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Proofread before publishing</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const blogForm = document.getElementById('blogForm');
+    const publishBtn = document.getElementById('publishBtn');
+    const fileInput = document.getElementById('formFileSm');
+    
+    // Add file validation on change
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type! Please upload an image (jpg, jpeg, png, gif, or webp).');
+                this.value = ''; // Clear the file input
+            }
+        }
+    });
+    
+    // Add click event listener to the publish button
+    publishBtn.addEventListener('click', function() {
+        // Validate file type again before submission
+        const file = fileInput.files[0];
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type! Please upload an image (jpg, jpeg, png, gif, or webp).');
+                return;
+            }
+        }
+        
+        // Get content from TinyMCE editor and set it to the form field
+        if (tinymce && tinymce.get('editor')) {
+            const content = tinymce.get('editor').getContent();
+            
+            if (!content || content.trim() === '') {
+                alert('Please add content to your blog post before publishing.');
+                return;
+            }
+            
+            // Set the content to the textarea
+            document.getElementById('editor').value = content;
+            
+            // Change button text to show processing
+            publishBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Publishing...';
+            publishBtn.disabled = true;
+            
+            // Submit the form
+            blogForm.submit();
+        } else {
+            // If TinyMCE isn't available, just submit the form directly
+            blogForm.submit();
+        }
+    });
+});
+</script>
