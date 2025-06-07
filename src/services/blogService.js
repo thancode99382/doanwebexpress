@@ -15,10 +15,11 @@ class BlogService {
     const totalBlogs = await Blog.countDocuments();
     const totalPages = Math.ceil(totalBlogs / limit);
     
-    // Get blogs with pagination
+    // Get blogs with pagination and force sort by createdAt in descending order
     const blogs = await Blog.find()
       .populate("category", "name")
       .populate("author", "username")
+      .sort({ createdAt: -1 }) // Sort newest first
       .skip(skip)
       .limit(limit);
       
@@ -78,7 +79,17 @@ class BlogService {
    * @returns {Array} - Blogs by the specified author
    */
   async getBlogsByAuthor(authorId) {
-    return await Blog.find().where({ author: authorId });
+    const blogs = await Blog.find()
+      .where({ author: authorId })
+      .sort({ createdAt: -1 }); // Sort by creation date, newest first
+    
+    console.log('Author blog dates:', blogs.map(blog => ({
+      id: blog._id.toString().slice(-4),
+      title: blog.title,
+      date: blog.createdAt
+    })));
+    
+    return blogs;
   }
 
   /**

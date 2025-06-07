@@ -39,7 +39,8 @@
                         
                     <!-- News item-->
                     <div class="mb-4">
-                        <!-- <div class="small text-muted">May 12, 2023</div> -->
+                        <!-- Add date display -->
+                        <div class="small text-muted"><%= new Date(blog.createdAt).toLocaleDateString('vi-VN') %></div>
                         <a class="link-dark" href="/blogs/<%= blog._id %>">
                             <h3>
                                 <%= blog.title %>

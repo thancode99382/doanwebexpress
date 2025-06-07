@@ -29,7 +29,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="formFileSm" class="form-label">Featured Image</label>
-                                <input class="form-control" name="file" id="formFileSm" type="file" required>
+                                <input class="form-control" name="file" id="formFileSm" type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/jpg" required>
                                 <small class="text-muted">Upload an image for your blog post (supported formats: jpg, jpeg, png, gif, webp)</small>
                             </div>
                             <div class="mb-3">
@@ -79,9 +79,32 @@
 document.addEventListener('DOMContentLoaded', function() {
     const blogForm = document.getElementById('blogForm');
     const publishBtn = document.getElementById('publishBtn');
+    const fileInput = document.getElementById('formFileSm');
+    
+    // Add file validation on change
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type! Please upload an image (jpg, jpeg, png, gif, or webp).');
+                this.value = ''; // Clear the file input
+            }
+        }
+    });
     
     // Add click event listener to the publish button
     publishBtn.addEventListener('click', function() {
+        // Validate file type again before submission
+        const file = fileInput.files[0];
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type! Please upload an image (jpg, jpeg, png, gif, or webp).');
+                return;
+            }
+        }
+        
         // Get content from TinyMCE editor and set it to the form field
         if (tinymce && tinymce.get('editor')) {
             const content = tinymce.get('editor').getContent();
