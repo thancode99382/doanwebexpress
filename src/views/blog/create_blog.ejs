@@ -6,14 +6,18 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/blogs">Blog Home</a></li>
-                        <li class="breadcrumb-item"><a href="/blogs/admin/personalblog">Admin Dashboard</a></li>
+                        <% if (typeof isUserPage !== 'undefined' && isUserPage) { %>
+                            <li class="breadcrumb-item"><a href="/blogs/user/dashboard">My Dashboard</a></li>
+                        <% } else { %>
+                            <li class="breadcrumb-item"><a href="/blogs/admin/personalblog">Admin Dashboard</a></li>
+                        <% } %>
                         <li class="breadcrumb-item active">Create Blog</li>
                     </ol>
                 </nav>
             </div>
 
             <div class="col-lg-9">
-                <form id="blogForm" action="/blogs/admin/createblog" method="post" enctype="multipart/form-data">
+                <form id="blogForm" action="<%= typeof isUserPage !== 'undefined' && isUserPage ? '/blogs/user/create' : '/blogs/admin/createblog' %>" method="post" enctype="multipart/form-data">
                     <div class="card shadow-sm">
                         <div class="card-header">
                             <h5 class="mb-0">Blog Details</h5>
@@ -48,7 +52,11 @@
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between">
-                                <a href="/blogs/admin/personalblog" class="btn btn-outline-secondary">Cancel</a>
+                                <% if (typeof isUserPage !== 'undefined' && isUserPage) { %>
+                                    <a href="/blogs/user/dashboard" class="btn btn-outline-secondary">Cancel</a>
+                                <% } else { %>
+                                    <a href="/blogs/admin/personalblog" class="btn btn-outline-secondary">Cancel</a>
+                                <% } %>
                                 <button id="publishBtn" type="button" class="btn btn-primary">Publish Blog Post</button>
                             </div>
                         </div>

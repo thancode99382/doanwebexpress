@@ -6,14 +6,18 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/blogs">Blog Home</a></li>
-                        <li class="breadcrumb-item"><a href="/blogs/admin/personalblog">Admin Dashboard</a></li>
+                        <% if (typeof isUserPage !== 'undefined' && isUserPage) { %>
+                            <li class="breadcrumb-item"><a href="/blogs/user/dashboard">My Dashboard</a></li>
+                        <% } else { %>
+                            <li class="breadcrumb-item"><a href="/blogs/admin/personalblog">Admin Dashboard</a></li>
+                        <% } %>
                         <li class="breadcrumb-item active">Edit Blog</li>
                     </ol>
                 </nav>
             </div>
 
             <div class="col-lg-9">
-                <form id="editBlogForm" action="/blogs/<%= blog._id %>?_method=PUT" method="post" enctype="multipart/form-data">
+                <form id="editBlogForm" action="<%= typeof isUserPage !== 'undefined' && isUserPage ? '/blogs/user/' + blog._id + '?_method=PUT' : '/blogs/' + blog._id + '?_method=PUT' %>" method="post" enctype="multipart/form-data">
                     <div class="card shadow-sm">
                         <div class="card-header">
                             <h5 class="mb-0">Edit Blog Details</h5>
@@ -25,7 +29,6 @@
                             </div>
                             <div class="mb-3">
                                 <label for="editor" class="form-label">Content</label>
-                                <!-- Remove required attribute from textarea -->
                                 <textarea class="form-control" name="content" id="editor" rows="10"><%= blog.content %></textarea>
                                 <div class="invalid-feedback">Please add some content to your blog post.</div>
                             </div>
@@ -51,7 +54,11 @@
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between">
-                                <a href="/blogs/admin/personalblog" class="btn btn-outline-secondary">Cancel</a>
+                                <% if (typeof isUserPage !== 'undefined' && isUserPage) { %>
+                                    <a href="/blogs/user/dashboard" class="btn btn-outline-secondary">Cancel</a>
+                                <% } else { %>
+                                    <a href="/blogs/admin/personalblog" class="btn btn-outline-secondary">Cancel</a>
+                                <% } %>
                                 <button class="btn btn-primary" type="submit">Update Blog Post</button>
                             </div>
                         </div>
@@ -76,12 +83,21 @@
                     <div class="card-body">
                         <div class="d-grid gap-2">
                             <a href="/blogs/<%= blog._id %>" class="btn btn-outline-primary">View Post</a>
-                            <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST">
-                                <button type="submit" class="btn btn-outline-danger w-100" 
-                                    onclick="return confirm('Are you sure you want to delete this blog post?')">
-                                    Delete Post
-                                </button>
-                            </form>
+                            <% if (typeof isUserPage !== 'undefined' && isUserPage) { %>
+                                <form action="/blogs/user/<%= blog._id %>?_method=DELETE" method="POST">
+                                    <button type="submit" class="btn btn-outline-danger w-100" 
+                                        onclick="return confirm('Are you sure you want to delete this blog post?')">
+                                        Delete Post
+                                    </button>
+                                </form>
+                            <% } else { %>
+                                <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST">
+                                    <button type="submit" class="btn btn-outline-danger w-100" 
+                                        onclick="return confirm('Are you sure you want to delete this blog post?')">
+                                        Delete Post
+                                    </button>
+                                </form>
+                            <% } %>
                         </div>
                     </div>
                 </div>
