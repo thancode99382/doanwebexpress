@@ -9,7 +9,7 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3>All Categories</h3>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
                         <i class="bi bi-plus-circle"></i> Add New Category
                     </button>
                 </div>
@@ -38,7 +38,7 @@
                                         <td><%= category.description || 'No description' %></td>
                                         <td><%= new Date(category.createdAt).toLocaleDateString('vi-VN') %></td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                            <button class="btn btn-sm btn-outline-dark me-2" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#editCategoryModal<%= category._id %>">
                                                 <i class="bi bi-pencil-square"></i> Edit
@@ -75,7 +75,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        <button type="submit" class="btn btn-dark">Save Changes</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -88,7 +88,7 @@
                         <% if (categories.length === 0) { %>
                             <div class="text-center py-5">
                                 <p class="text-muted">No categories have been created yet.</p>
-                                <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+                                <button type="button" class="btn btn-dark mt-2" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
                                     Create Your First Category
                                 </button>
                             </div>
@@ -126,7 +126,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Category</button>
+                        <button type="submit" class="btn btn-dark">Create Category</button>
                     </div>
                 </form>
             </div>

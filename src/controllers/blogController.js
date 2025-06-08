@@ -98,11 +98,13 @@ exports.getBlogById = async (req, res) => {
     
     await blog.populate("category", "name");
     const { user, isAdmin } = await getUserFromToken(req);
+    const comments = await commentService.getCommentsByBlogId(req.params.id);
     
     res.render("blog/details", {
       blog,
       user,
       isAdmin,
+      comments, // Added comments to the view data
       layout: "layouts/mainLayout",
       title: blog.title,
     });
@@ -319,5 +321,21 @@ exports.deleteUserBlog = async (req, res) => {
     res.redirect("/blogs/user/dashboard");
   } catch (error) {
     handleError(res, error, "Internal server error");
+  }
+};
+
+exports.createComment = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You must be logged in to comment' });
+    }
+
+    const { content } = req.body;
+    const blogId = req.params.id;
+    
+    await commentService.createComment(content, blogId, req.user.userId);
+    res.redirect(`/blogs/${blogId}`);
+  } catch (error) {
+    handleError(res, error, "Error creating comment");
   }
 };

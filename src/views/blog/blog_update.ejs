@@ -59,7 +59,7 @@
                                 <% } else { %>
                                     <a href="/blogs/admin/personalblog" class="btn btn-outline-secondary">Cancel</a>
                                 <% } %>
-                                <button class="btn btn-primary" type="submit">Update Blog Post</button>
+                                <button class="btn btn-dark" type="submit">Update Blog Post</button>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            <a href="/blogs/<%= blog._id %>" class="btn btn-outline-primary">View Post</a>
+                            <a href="/blogs/<%= blog._id %>" class="btn btn-outline-dark">View Post</a>
                             <% if (typeof isUserPage !== 'undefined' && isUserPage) { %>
                                 <form action="/blogs/user/<%= blog._id %>?_method=DELETE" method="POST">
                                     <button type="submit" class="btn btn-outline-danger w-100" 

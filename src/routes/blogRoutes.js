@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const blogController = require('../controllers/blogController');
+const authMiddleware = require('../middlewares/authMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
 const userMiddleware = require('../middlewares/userMiddleware');
 const upload = require('../middlewares/upload');
@@ -9,6 +10,7 @@ const upload = require('../middlewares/upload');
 // Public routes - no authentication required
 router.get('/', blogController.getAllBlogs);
 router.get('/:id', blogController.getBlogById);
+router.post('/:id/comments', authMiddleware, blogController.createComment);
 
 // Admin-only routes
 router.get('/admin/personalblog', adminMiddleware, blogController.personalBlog);
