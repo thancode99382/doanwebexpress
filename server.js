@@ -39,10 +39,12 @@ app.use('/blogs', require('./src/routes/blogRoutes'));
 app.use('/admin', require('./src/routes/adminRoutes')); // Add admin routes
 
 // Static files
+app.use(express.static(path.resolve(__dirname, "public")));
 app.use("/css", express.static(path.resolve(__dirname, "public/css")));
 app.use("/img", express.static(path.resolve(__dirname, "public/images")));
 app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 app.use("/js", express.static(path.resolve(__dirname, "public/js")));
+app.use("/assets", express.static(path.resolve(__dirname, "assets")));
 
 // Listen to server
 const PORT = process.env.PORT || 3000;
