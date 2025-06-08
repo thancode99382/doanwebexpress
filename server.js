@@ -28,9 +28,9 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 // Use express-ejs-layouts
 app.use(expressLayouts);
 
-// Root route for the introduction page
+// Root route - redirect to blogs page
 app.get('/', (req, res) => {
-  res.render('home/index', { layout: false });
+  res.redirect('/blogs');
 });
 
 // Routes
