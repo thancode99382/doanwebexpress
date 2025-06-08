@@ -20,14 +20,7 @@
                             <%= blog.category.name %>
                         </a>
                         
-                        <% if (typeof user !== 'undefined' && user) { %>
-                        <div class="mt-2">
-                            <a href="/blogs/<%= blog._id %>/edit" class="btn btn-sm btn-primary">Edit</a>
-                            <form action="/blogs/<%= blog._id %>?_method=DELETE" method="POST" style="display: inline-block;">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this blog?')">Delete</button>
-                            </form>
-                        </div>
-                        <% } %>
+                        
                     </header>
                     <!-- Preview image figure-->
                     <figure class="mb-4"><img class="img-fluid rounded" src="<%= blog.image %>" alt="<%  blog.image %>"
@@ -46,19 +39,7 @@
                     <a href="/blogs" class="btn btn-outline-primary">&larr; Back to All Blogs</a>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <% if (typeof user !== 'undefined' && user) { %>
-                <div class="card mb-4">
-                    <div class="card-header">Admin Actions</div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <a href="/blogs/admin/personalblog" class="btn btn-primary">Dashboard</a>
-                            <a href="/blogs/admin/createblog" class="btn btn-success">Create New Blog</a>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
-            </div>
+            
         </div>
     </div>
 </section>
