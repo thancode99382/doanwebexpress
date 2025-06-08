@@ -40,13 +40,17 @@
                             
                             <% if (isCurrentUserAdmin) { %>
                                 <!-- Admin navigation -->
-                                <li class="nav-item"><a class="nav-link" href="/blogs/admin/personalblog">Admin Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/blogs/admin/personalblog">Blog Manegement</a></li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" id="navbarDropdownAdmin" href="#" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-shield-check-fill"></i> <%= user %> (Admin)
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAdmin">
+                                        <li><a class="dropdown-item" href="/admin/">
+                                            <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                        </a></li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" href="/blogs/admin/createblog">Create New Blog</a></li>
                                         <li><a class="dropdown-item" href="/admin/categories">Manage Categories</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -55,7 +59,7 @@
                                 </li>
                             <% } else { %>
                                 <!-- Regular user navigation -->
-                                <li class="nav-item"><a class="nav-link" href="/blogs/user/dashboard">My Dashboard</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/blogs/user/dashboard">My blog</a></li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" id="navbarDropdownUser" href="#" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">

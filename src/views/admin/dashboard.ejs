@@ -1,0 +1,142 @@
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bolder">Blog Manegement</h1>
+            <p class="lead fw-normal text-muted mb-0">Manage your website content and users</p>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="row gx-5 mb-5">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-primary">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people-fill text-primary display-4"></i>
+                        <h5 class="card-title mt-3">Users</h5>
+                        <p class="card-text text-muted">Manage system users</p>
+                        <a href="/admin/users" class="btn btn-primary">
+                            <i class="bi bi-person-gear"></i> User Management
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-success">
+                    <div class="card-body text-center">
+                        <i class="bi bi-tags-fill text-success display-4"></i>
+                        <h5 class="card-title mt-3">Categories</h5>
+                        <p class="card-text text-muted">Manage blog categories</p>
+                        <a href="/admin/categories" class="btn btn-success">
+                            <i class="bi bi-tags"></i> Category Management
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-info">
+                    <div class="card-body text-center">
+                        <i class="bi bi-journal-text text-info display-4"></i>
+                        <h5 class="card-title mt-3">Blogs</h5>
+                        <p class="card-text text-muted">Manage blog posts</p>
+                        <a href="/blogs/admin/personalblog" class="btn btn-info">
+                            <i class="bi bi-journal-text"></i> Blog Management
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Management Actions -->
+        <div class="row gx-5">
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-gear"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="/admin/users/create" class="btn btn-outline-primary">
+                                <i class="bi bi-person-plus"></i> Create New User
+                            </a>
+                            <a href="/blogs/create" class="btn btn-outline-success">
+                                <i class="bi bi-plus-circle"></i> Create New Blog Post
+                            </a>
+                            <a href="/blogs" class="btn btn-outline-info">
+                                <i class="bi bi-house"></i> View Public Site
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-bar-chart"></i> System Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="border-end">
+                                    <h4 class="text-primary mb-1">
+                                        <i class="bi bi-people"></i>
+                                    </h4>
+                                    <small class="text-muted">Total Users</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border-end">
+                                    <h4 class="text-success mb-1">
+                                        <i class="bi bi-journal"></i>
+                                    </h4>
+                                    <small class="text-muted">Total Posts</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h4 class="text-info mb-1">
+                                    <i class="bi bi-tags"></i>
+                                </h4>
+                                <small class="text-muted">Categories</small>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> Last updated: <%= new Date().toLocaleDateString('vi-VN') %>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Welcome Message -->
+        <div class="row gx-5 mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm bg-light">
+                    <div class="card-body text-center py-4">
+                        <h5 class="card-title">Welcome back, <%= user %>!</h5>
+                        <p class="card-text text-muted">
+                            You have administrator privileges. Use the management tools above to control your website content and users.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.display-4 {
+    font-size: 3rem;
+}
+
+.border-end {
+    border-right: 1px solid #dee2e6 !important;
+}
+</style>
