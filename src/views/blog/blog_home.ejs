@@ -7,10 +7,10 @@
                 <div class="row gx-0">
                     <div class="col-lg-6 col-xl-5 py-lg-5">
                         <div class="p-4 p-md-5">
-                            <div class="badge bg-primary bg-gradient rounded-pill mb-2">Hot news</div>
+                            <div class="badge bg-dark bg-gradient rounded-pill mb-2">Hot news</div>
                             <div class="h2 fw-bolder"><%- blog_hot.title %></div>
                             
-                            <a class="stretched-link text-decoration-none" href="/blogs/<%= blog_hot._id %>">
+                            <a class="stretched-link text-dark text-decoration-none" href="/blogs/<%= blog_hot._id %>">
                                 Read more
                                 <i class="bi bi-arrow-right"></i>
                             </a>
@@ -32,12 +32,7 @@
     <div class="container px-5">
         <div class="row gx-5">
             <div class="col-xl-8">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fw-bolder fs-5">News</h2>
-                    <% if (typeof user !== 'undefined' && user) { %>
-                        <a href="/blogs/admin/personalblog" class="btn btn-sm btn-primary">Admin Dashboard</a>
-                    <% } %>
-                </div>
+                
                 <% blogs.forEach(blog=> { %>
                         
                         

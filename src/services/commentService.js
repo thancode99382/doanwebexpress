@@ -7,10 +7,9 @@ class CommentService {
    * @returns {Array} - Comments with author information
    */
   async getCommentsByBlogId(blogId) {
-    let comments = await CommentBlog.find({ blog: blogId }).populate(
-      "author",
-      "username"
-    );
+    let comments = await CommentBlog.find({ blog: blogId })
+      .populate('author', 'username')
+      .sort({ createdAt: -1 });
     
     // Ensure author always exists in comment objects
     return comments.map((comment) => ({

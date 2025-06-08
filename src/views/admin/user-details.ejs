@@ -1,0 +1,182 @@
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="row gx-5">
+            <div class="col-lg-12 mb-4">
+                <h2 class="fw-bolder">User Details: <%= viewUser.username %></h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/blogs">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/users">User Management</a></li>
+                        <li class="breadcrumb-item active">User Details</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Basic Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Username</h6>
+                                <p class="fw-bold"><%= viewUser.username %></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Email Address</h6>
+                                <p class="fw-bold"><%= viewUser.email %></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">User Role</h6>
+                                <p>
+                                    <% if (viewUser.isAdmin) { %>
+                                        <span class="badge bg-danger fs-6">Administrator</span>
+                                    <% } else { %>
+                                        <span class="badge bg-secondary fs-6">Regular User</span>
+                                    <% } %>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">User ID</h6>
+                                <p class="text-muted font-monospace"><%= viewUser._id %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Account Timeline</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="timeline-marker bg-success me-3"></div>
+                                    <div>
+                                        <h6 class="mb-1">Account Created</h6>
+                                        <p class="text-muted mb-0">
+                                            <%= new Date(viewUser.createdAt).toLocaleDateString('vi-VN', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            }) %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="timeline-marker bg-info me-3"></div>
+                                    <div>
+                                        <h6 class="mb-1">Last Updated</h6>
+                                        <p class="text-muted mb-0">
+                                            <%= new Date(viewUser.updatedAt).toLocaleDateString('vi-VN', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            }) %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Activity Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="border-end">
+                                    <h3 class="text-primary mb-1"><%= blogCount %></h3>
+                                    <p class="text-muted mb-0">Blog Posts</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border-end">
+                                    <h3 class="text-success mb-1">
+                                        <%= Math.floor((Date.now() - new Date(viewUser.createdAt).getTime()) / (1000 * 60 * 60 * 24)) %>
+                                    </h3>
+                                    <p class="text-muted mb-0">Days Active</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="text-info mb-1">
+                                    <% if (viewUser.isAdmin) { %>
+                                        Admin
+                                    <% } else { %>
+                                        User
+                                    <% } %>
+                                </h3>
+                                <p class="text-muted mb-0">Role Level</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/admin/users/<%= viewUser._id %>/edit" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit User
+                            </a>
+                            <% if (!viewUser.isAdmin) { %>
+                                <form method="POST" action="/admin/users/<%= viewUser._id %>/delete" 
+                                      onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                    <button type="submit" class="btn btn-danger w-100">
+                                        <i class="fas fa-trash me-2"></i>Delete User
+                                    </button>
+                                </form>
+                            <% } %>
+                            <a href="/admin/users" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Users
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.timeline-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.border-end:last-child {
+    border-right: none !important;
+}
+
+@media (max-width: 768px) {
+    .border-end {
+        border-right: none !important;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .border-end:last-child {
+        border-bottom: none !important;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+}
+</style>
